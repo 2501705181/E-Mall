@@ -61,8 +61,37 @@ public class eMall {
         System.out.println("注册成功！");
 
     }
-    private void Login(){
+    private int Login() {
+        String loginName;
+        String loginPassword;
 
+        System.out.println("请输入用户名：");
+        loginName = scanner.next();
+
+        if(UserAmount==0){
+            System.out.println("用户列表为空");
+            return 0;
+        }
+
+        for (int i = 0; i < UserAmount; i++) {
+            if (loginName.equals(Users[i].getName()))
+            {
+                System.out.println("请输入密码：");
+                loginPassword = scanner.next();
+
+                while (!loginPassword.equals(Users[i].getPassword())){
+                    System.out.println("密码错误，请重新输入：");
+                    loginPassword = scanner.next();
+                }
+                System.out.println("登录成功！");
+                return 1;
+            }
+            else{
+                System.out.println("该用户不存在！");
+
+            }
+        }
+        return 0;
     }
     private void CheckMall(){
 
@@ -72,7 +101,9 @@ public class eMall {
 
     }
     private void AdministratorLogin(){
-
+        Administrator admin=new Administrator();
+        if(admin.Login())//返回true为登录成功
+            admin.adminMenu();
     }
     private void Exit(){
         loop=false;

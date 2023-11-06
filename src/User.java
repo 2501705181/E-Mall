@@ -8,10 +8,10 @@ public class User {
         this.password=password;
     }
 
-    private String getName() {
+    public String getName() {
         return name;
     }
-    private String getPassword() {
+    public String getPassword() {
         return password;
     }
     public void setName(String name) {
