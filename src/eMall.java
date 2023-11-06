@@ -3,7 +3,9 @@ import java.util.Scanner;
 public class eMall {
 
     private User []Users=new User[1000];//存1000个用户
+    public static eItem[]Items=new eItem[10000];//存10000件商品
     private int UserAmount=0;
+    public static int ItemAmount=0;
     private Scanner scanner=new Scanner(System.in);
     private boolean loop=true;
 
@@ -25,7 +27,10 @@ public class eMall {
                 case 1: System.out.print("您选择的菜单是：注册\n");Register();break;
                 case 2: System.out.print("您选择的菜单是：登录\n");Login();break;
                 case 3: System.out.print("您选择的菜单是：查看商城\n");CheckMall();break;
-                case 4: System.out.print("您选择的菜单是：查看我购买的商品\n");ViewMyPurchases();break;
+                case 4:
+                    System.out.print("您选择的菜单是：查看我购买的商品\n");
+                    checkItems();
+                    break;
                 case 5: System.out.print("您选择的菜单是：管理员登陆\n");AdministratorLogin();break;
                 case 6: System.out.print("您选择的菜单是：退出系统\n");Exit();break;
                 default: System.out.print("输入错误！\n");break;
@@ -107,6 +112,12 @@ public class eMall {
     }
     private void Exit(){
         loop=false;
+    }
+
+    public void checkItems(){
+        for(int i=0;i<ItemAmount;i++){
+            System.out.println(Items[i].toString());
+        }
     }
 
 

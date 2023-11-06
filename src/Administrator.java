@@ -1,8 +1,9 @@
+import java.math.BigDecimal;
 import java.util.Scanner;
 public class Administrator extends User{
 
     Scanner scanner=new Scanner(System.in);
-    boolean loop=false;
+    boolean loop=true;
 
     public Administrator(){
         this.setName("admin");
@@ -61,7 +62,22 @@ public class Administrator extends User{
 
 
     public void addItem(){
+        String number;
+        String name;
+        BigDecimal price;
+        int amount;
 
+        System.out.println("请输入商品的编号、名称、价格、数量：");
+        number=scanner.next();
+        name= scanner.next();
+        price=scanner.nextBigDecimal();
+        amount=scanner.nextInt();
+        eItem newItem=new eItem(number,name,price,amount);
+
+        eMall A=new eMall();
+        A.Items[A.ItemAmount]=newItem;
+        A.ItemAmount++;
+        System.out.println("成功添加物品："+name);
     }
 
     public void deleteItem(){
