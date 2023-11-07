@@ -5,7 +5,6 @@ public class eMall {
 
     private User []Users=new User[1000];//存1000个用户
     public static eItem[]Items=new eItem[10000];//存10000件商品
-    //public static eItem[]MyItems=new eItem[10000];//我的购买
 
     private int UserAmount=0;
     public static int ItemAmount=0;
@@ -141,26 +140,35 @@ public class eMall {
 
         System.out.println("-----商品列表-----");
         for(int i=0;i<ItemAmount;i++)
-            System.out.println(Items[i].toString());
+            if(!Items[i].getNumber().equals("-1"))
+                System.out.println(Items[i].toString());
         System.out.println("-----------------");
 
         String number;
         int num=0;
         int pos=-1;
 
-        System.out.println("请输入你要购买的商品编号：");
+        System.out.println("请输入你要购买的商品编号：输入no取消购买");
         number=scanner.next();
+        if(number.equals("no")) {
+            System.out.println("取消购买");
+            return;
+        }
 
         while(pos==-1){
-        for(int i=0;i<ItemAmount;i++)
-            if(number.equals(Items[i].getNumber())) {
-                pos = i;
-                break;
+            for(int i=0;i<ItemAmount;i++)
+                if(number.equals(Items[i].getNumber())) {
+                    pos = i;
+                    break;
+                }
+            if(pos==-1) {
+                System.out.println("未找到该商品，请重新输入：");
+                number = scanner.next();
+                if(number.equals("no")) {
+                    System.out.println("取消购买");
+                    return;
+                }
             }
-        if(pos==-1) {
-            System.out.println("未找到该商品，请重新输入：");
-            number = scanner.next();
-        }
         }
 
             System.out.println("请输入要购买的数量：");
