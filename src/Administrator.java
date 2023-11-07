@@ -3,6 +3,7 @@ import java.util.Scanner;
 public class Administrator extends User{
 
     Scanner scanner=new Scanner(System.in);
+    //eMall Mall=new eMall();
     boolean loop=true;
 
     public Administrator(){
@@ -67,20 +68,18 @@ public class Administrator extends User{
         BigDecimal price;//价格
         int amount;//数量
         boolean loop=true;
-        eMall Mall=new eMall();
-
         while(loop)
         {
             boolean isExist=false;
             System.out.println("请输入商品的编号:");
             number = scanner.next();
 
-            for (int i = 0; i < Mall.ItemAmount; i++) {
-                if (number.equals(Mall.Items[i].getNumber())) {
+            for (int i = 0; i < eMall.ItemAmount; i++) {
+                if (number.equals(eMall.Items[i].getNumber())) {
                     System.out.println("该商品已存在，请输入数量：");
                     amount = scanner.nextInt();
-                    Mall.Items[i].setAmount(amount);
-                    System.out.println("已将商品" + Mall.Items[i].getName() + "的数量设为" + amount);
+                    eMall.Items[i].setAmount(amount);
+                    System.out.println("已将商品" + eMall.Items[i].getName() + "的数量设为" + amount);
                     isExist=true;
                 }
             }
@@ -93,7 +92,7 @@ public class Administrator extends User{
                 eItem newItem = new eItem(number, name, price, amount);
 
 
-                Mall.Items[Mall.ItemAmount++] = newItem;
+                eMall.Items[eMall.ItemAmount++] = newItem;
                 //A.ItemAmount++;
                 System.out.println("成功添加物品：" + name);
             }
@@ -116,9 +115,62 @@ public class Administrator extends User{
 
     }
 
-    public void changeItem(){
+    public void changeItem() {
+        String number;//编号
+        String name;//名称
+        BigDecimal price;//价格
+        int amount;//数量
+
+        if (eMall.ItemAmount == 0) {
+            System.out.println("商品列表为空！");
+            return;
+        }
+
+        System.out.println("-----商品列表-----");
+        for (int i = 0; i < eMall.ItemAmount; i++) {
+            if (!eMall.Items[i].getNumber().equals("-1"))
+                System.out.println(eMall.Items[i].toString());
+        }
+        System.out.println("---------------");
+
+        BigDecimal zero = new BigDecimal(0);
+        int pos = -1;
+        System.out.println("请输入要修改的商品的编号：");
+        number = scanner.next();
+
+        do {
+            for (int i = 0; i < eMall.ItemAmount; i++)
+                if (number.equals(eMall.Items[i].getNumber())) {
+                    pos = i;
+                    break;
+                }
+            if (pos==-1) {
+                System.out.println("该商品不存在，请重新输入商品编号：");
+                number = scanner.next();
+            }
+        } while (pos == -1);
+
+        System.out.println("请输入该商品的名称、价格、数量");
+        do {
+            name = scanner.next();
+            price = scanner.nextBigDecimal();
+            amount = scanner.nextInt();
+
+            if(price.compareTo(zero) < 1)
+                System.out.println("商品价格必须大于0,请重新输入：");
+
+            if(amount <= 0)
+                System.out.println("商品数量必须大于0，请重新输入：");
+
+        }while(price.compareTo(zero) < 1||amount <= 0);
+
+        eMall.Items[pos].setName(name);
+        eMall.Items[pos].setPrice(price);
+        eMall.Items[pos].setAmount(amount);
+        System.out.println("修改成功！");
 
     }
+
 
     public void exit(){
         loop=false;
