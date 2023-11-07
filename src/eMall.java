@@ -7,8 +7,8 @@ public class eMall {
     private int UserAmount=0;
     public static int ItemAmount=0;
     private Scanner scanner=new Scanner(System.in);
-    private boolean loop=true;
-
+    private boolean loop=true;//控制菜单显示
+    private User userNow=null;//当前登录的用户
     public void Menu(){
         int select;
         do {
@@ -26,7 +26,7 @@ public class eMall {
             switch (select) {
                 case 1: System.out.print("您选择的菜单是：注册\n");Register();break;
                 case 2: System.out.print("您选择的菜单是：登录\n");Login();break;
-                case 3: System.out.print("您选择的菜单是：查看商城\n");CheckMall();break;
+                case 3: System.out.print("您选择的菜单是：查看商城\n");ViewMall();break;
                 case 4:
                     System.out.print("您选择的菜单是：查看我购买的商品\n");
                     checkItems();
@@ -42,8 +42,7 @@ public class eMall {
     private void Register(){
         String name,password;
         Validator validator=new Validator();
-        //Validator.isAlphaNumeric(password)
-        //当password为字母和数字的组合时返回true，否则返回false
+        //Validator.isAlphaNumeric(password),当password为字母和数字的组合时返回true，否则返回false
 
         do{
             System.out.println("请输入用户名：");
@@ -61,8 +60,7 @@ public class eMall {
                 System.out.println("密码必须包含字母和数字！");
         }while(password.length()<6||!Validator.isAlphaNumeric(password));
 
-        Users[UserAmount]=new User(name,password);
-        UserAmount++;
+        Users[UserAmount++]=new User(name,password);
         System.out.println("注册成功！");
 
     }
@@ -70,13 +68,19 @@ public class eMall {
         String loginName;
         String loginPassword;
 
+        if(userNow!=null){
+            System.out.println("当前已登录用户"+userNow.getName()+",不能重复登录");
+            return 0;
+        }
+
+        if(UserAmount==0){
+            System.out.println("用户列表为空,请先注册");
+            return 0;
+        }
+
         System.out.println("请输入用户名：");
         loginName = scanner.next();
 
-        if(UserAmount==0){
-            System.out.println("用户列表为空");
-            return 0;
-        }
 
         for (int i = 0; i < UserAmount; i++) {
             if (loginName.equals(Users[i].getName()))
@@ -88,6 +92,7 @@ public class eMall {
                     System.out.println("密码错误，请重新输入：");
                     loginPassword = scanner.next();
                 }
+                userNow=new User(loginName,loginPassword);
                 System.out.println("登录成功！");
                 return 1;
             }
@@ -98,7 +103,22 @@ public class eMall {
         }
         return 0;
     }
-    private void CheckMall(){
+
+
+    //
+    private void ViewMall(){
+        if (ItemAmount==0){
+            System.out.println("商城为空");
+            return;
+        }
+
+        if(userNow!=null){
+            System.out.println("-----商品列表-----");
+            for(int i=0;i<ItemAmount;i++)
+                System.out.println(Items[i].toString());
+            System.out.println("-----------------");
+        }else
+            System.out.println("未登录账号，请先登录");
 
     }
 

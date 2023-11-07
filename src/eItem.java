@@ -17,10 +17,35 @@ public class eItem {
         this.amount=amount;
         this.price=price;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
     @Override
     public String toString(){
         return "名称："+this.name+" 编号：" +this.number
-                +" 数量："+this.amount+" 价格："+this.price;
+                +" 价格："+this.price+" 数量："+this.amount;
     }
 
 }
