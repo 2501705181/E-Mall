@@ -5,7 +5,7 @@ public class eMall {
 
     private User []Users=new User[1000];//存1000个用户
     public static eItem[]Items=new eItem[10000];//存10000件商品
-    public static eItem[]MyItems=new eItem[10000];//我的购买
+    //public static eItem[]MyItems=new eItem[10000];//我的购买
 
     private int UserAmount=0;
     public static int ItemAmount=0;
