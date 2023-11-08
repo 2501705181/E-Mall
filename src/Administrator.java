@@ -2,8 +2,8 @@ import java.math.BigDecimal;
 import java.util.Scanner;
 public class Administrator extends User{
 
-    Scanner scanner=new Scanner(System.in);
-    boolean loop=true;
+    static Scanner scanner=new Scanner(System.in);
+    static boolean loop=true;
 
     public Administrator(){
         this.setName("admin");
@@ -15,29 +15,44 @@ public class Administrator extends User{
         this.setPassword(password);
     }
 
-    public boolean Login() {
+    //确认
+    public static boolean YorN(){
+        char select = scanner.next().charAt(0);
+        if(select=='y')
+            return true;
+        else if(select=='n')
+            return false;
+        else {
+            return false;
+        }
+    }
+
+    //管理员登陆
+    public static Administrator Login() {
         String loginName;
         String loginPassword;
         System.out.println("请输入管理员用户名：");
         loginName=scanner.next();
 
-        if(!loginName.equals(this.getName())) {
+        //static静态方法同类一起加载，不能使用this、super
+        if(!loginName.equals("admin")) {
             System.out.println("该管理员不存在！");
-            return false;
+            return null;
         }
             System.out.println("请输入密码：");
             loginPassword=scanner.next();
 
-            while(!loginPassword.equals(this.getPassword())) {
+            while(!loginPassword.equals("admin")) {
                 System.out.println("密码错误，请重新输入：");
                 loginPassword=scanner.next();
             }
+            Administrator admin=new Administrator(loginName,loginPassword);
             System.out.println("登录成功！");
-            return true;
-
+            return admin;
     }
 
-    public void adminMenu(){
+    //显示菜单
+    public static void Menu(){
         int select;
         do {
             System.out.println("*****管理员菜单****");
@@ -59,20 +74,20 @@ public class Administrator extends User{
         }while(loop);
     }
 
-    public void itemList(){
+    //打印商品列表
+    public static void itemList(){
         if (eMall.ItemAmount == 0) {
             System.out.println("商品列表为空！");
             return;
         }
         System.out.println("-----商品列表-----");
-        for (int i = 0; i < eMall.ItemAmount; i++) {
-            if (!eMall.Items[i].getNumber().equals("-1"))
+        for (int i = 0; i < eMall.ItemAmount; i++)
                 System.out.println(eMall.Items[i].toString());
-        }
         System.out.println("---------------");
     }
 
-    public void addItem(){
+    //添加商品
+    public static void addItem(){
         String number;//编号
         String name;//名称
         BigDecimal price;//价格
@@ -108,49 +123,48 @@ public class Administrator extends User{
             }
 
                 System.out.println("是否继续添加物品？y/n");
-                char select = scanner.next().charAt(0);
-                if(select=='y')
-                    loop=true;
-                else if(select=='n')
-                    loop=false;
-                else {
-                    System.out.println("输入错误");
-                    loop=false;
-                }
+                loop=YorN();
+
             }
-        }
+    }
 
-
-    public void deleteItem() {
+    //删除商品
+    public static void deleteItem(){
         String number;
         boolean flag=true;
-        itemList();
-        /*
-            有bug，以下代码只是假删，所以删完之后其实还是有商品
-         */
 
-        int pos = -1;
+        //打印商品列表
+        itemList();
+        if(eMall.ItemAmount==0)
+            return;
+
+        int index = -1;
         System.out.println("请输入你要删除的商品编号：");
         number = scanner.next();
 
         do {
             for (int i = 0; i < eMall.ItemAmount; i++)
                 if (number.equals(eMall.Items[i].getNumber())) {
-                    pos = i;
+                    index = i;
                     break;
                 }
-            if(pos==-1){
+            if(index==-1){
                 System.out.println("未找到该商品，请重新输入商品编号：");
                 number=scanner.next();
             }
-        }while(pos==-1);
+        }while(index==-1);
 
         do {
             System.out.println("确认要删除这个商品吗？y/n");
             char ch = scanner.next().charAt(0);
             if (ch == 'y') {
-                System.out.println("已删除商品" + eMall.Items[pos].getNumber());
-                eMall.Items[pos].setNumber("-1");
+
+                System.out.println("已删除商品" + eMall.Items[index].getName());
+                for(int i=index;i<eMall.ItemAmount-1;i++)//移动item
+                    eMall.Items[i]=eMall.Items[i+1];
+                eMall.Items[eMall.ItemAmount-1]=null;
+                eMall.ItemAmount--;
+
                 flag=false;
             }
             else if(ch=='n') {
@@ -162,16 +176,17 @@ public class Administrator extends User{
 
     }
 
-
-
-
-    public void changeItem() {
+    //修改商品
+    public static void changeItem() {
         String number;//编号
         String name;//名称
         BigDecimal price;//价格
         int amount;//数量
 
+        //打印商品列表
         itemList();
+        if(eMall.ItemAmount==0)
+            return;
 
         BigDecimal zero = new BigDecimal(0);
         int pos = -1;
@@ -211,8 +226,8 @@ public class Administrator extends User{
 
     }
 
-
-    public void exit(){
+    //退出
+    public static void exit(){
         loop=false;
     }
 }
