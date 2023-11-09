@@ -1,5 +1,5 @@
-public class eMallApp {
+public class shopApp {
     public static void main(String[] args) {
-        new eMall().Menu();
+        new shop().Menu();
     }
 }

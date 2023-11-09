@@ -1,10 +1,10 @@
 import java.math.BigDecimal;
 import java.util.Scanner;
 
-public class eMall {
+public class shop {
 
     public static User []Users=new User[1000];//存1000个用户
-    public static eItem[]Items=new eItem[10000];//存10000件商品
+    public static Item[]Items=new Item[10000];//存10000件商品
 
     public static int UserAmount=0;
     public static int ItemAmount=0;
@@ -14,9 +14,9 @@ public class eMall {
 
     {
         //****测试用****
-        Items[0]=new eItem("10001","apple", new BigDecimal(5),20);
-        Items[1]=new eItem("10002","pear", new BigDecimal(4),40);
-        Items[2]=new eItem("10003","banana", new BigDecimal(3),50);
+        Items[0]=new Item("10001","apple", new BigDecimal(5),20);
+        Items[1]=new Item("10002","pear", new BigDecimal(4),40);
+        Items[2]=new Item("10003","banana", new BigDecimal(3),50);
         ItemAmount=3;
 
         //userNow=new User("name","123abc");
@@ -49,10 +49,13 @@ public class eMall {
         }while(loop);
     }
 
+    //注册
     private void Register(){
-        eMall.Users[eMall.UserAmount++]=User.Register();
+        shop.Users[UserAmount]=User.Register();
+        UserAmount++;
     }
 
+    //登录
     private void Login() {
 
         if(userNow!=null){
@@ -61,13 +64,13 @@ public class eMall {
         }
 
         if(UserAmount==0){
-            System.out.println("用户列表为空,请先注册");
+            System.out.println("请先注册");
             return;
         }
 
         //设置当前登录用户
         userNow=User.Login();
-        if(User.Login()!=null)
+        if(userNow!=null)
             System.out.println("登录成功！");
         else
             System.out.println("登录失败！");
@@ -93,7 +96,7 @@ public class eMall {
         System.out.println("-----------------");
 
         String number;//要购买的商品的编号
-        int num=0;//要购买的数量
+        int num;//要购买的数量
         int index=-1;//-1表示未找到商品
 
         System.out.println("请输入你要购买的商品编号：输入no取消购买");
@@ -117,6 +120,11 @@ public class eMall {
                     return;
                 }
             }
+        }
+
+        if(Items[index].getAmount()==0){
+            System.out.println("商品库存不足，无法购买");
+            return;
         }
 
             System.out.println("请输入要购买的数量：");
@@ -147,8 +155,8 @@ public class eMall {
 
 
     private void AdministratorLogin(){
-        if(Administrator.Login()!=null)//返回true为登录成功
-            Administrator.Menu();//启动管理员菜单
+        if(Admin.Login()!=null)//返回true为登录成功
+            Admin.Menu();//启动管理员菜单
     }
 
     private void Exit(){
@@ -156,9 +164,9 @@ public class eMall {
         do {
             System.out.println("确认要退出吗？y/n");
             ch = scanner.next().charAt(0);
-            if(ch=='y')
+            if(ch=='y'||ch=='Y')
                 loop = false;
-            else if (ch=='n') {
+            else if (ch=='n'||ch=='N') {
                 break;
             }
         }while(loop);

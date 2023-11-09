@@ -30,9 +30,8 @@ public class User {
             if(name.length()<3)
                 System.out.println("用户名长度不能小于3位!");
 
-            for(int i=0;i<eMall.UserAmount;i++) {
-                System.out.println("you bug");
-                if (name.equals(eMall.Users[i].getName())) {
+            for(int i = 0; i< shop.UserAmount; i++) {
+                if (name.equals(shop.Users[i].getName())) {
                     isExist = true;
                     System.out.println("用户名已存在！");
                 }
@@ -60,22 +59,23 @@ public class User {
         String loginName;
         String loginPassword;
         Scanner scanner=new Scanner(System.in);
+
         System.out.println("请输入用户名：");
         loginName = scanner.next();
 
-        for (int i = 0; i < eMall.UserAmount; i++) {
-            if (loginName.equals(eMall.Users[i].getName())) {
+        for (int i = 0; i < shop.UserAmount; i++) {
+            if (loginName.equals(shop.Users[i].getName())) {
                 System.out.println("请输入密码：");
                 loginPassword = scanner.next();
 
-                while (!loginPassword.equals(eMall.Users[i].getPassword())) {
+                while (!loginPassword.equals(shop.Users[i].getPassword())) {
                     System.out.println("密码错误，请重新输入：");
                     loginPassword = scanner.next();
                 }
-                User userNow = new User(loginName, loginPassword);
-                return userNow;
+                return new User(loginName, loginPassword);
             }
         }
+
         System.out.println("未找到该用户");
         return null;
     }
