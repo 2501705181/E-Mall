@@ -5,22 +5,24 @@ public class shop {
 
     public static User []Users=new User[1000];//存1000个用户
     public static Item[]Items=new Item[10000];//存10000件商品
-
     public static int UserAmount=0;
     public static int ItemAmount=0;
+
+
     private Scanner scanner=new Scanner(System.in);
     private boolean loop=true;//控制菜单显示
     private User userNow=null;//当前登录的用户
 
-    {
-        //****测试用****
+    //执行顺序 1静态代码块 2普通代码块 3构造器
+    static {
+        //测试用
         Items[0]=new Item("10001","apple", new BigDecimal(5),20);
         Items[1]=new Item("10002","pear", new BigDecimal(4),40);
         Items[2]=new Item("10003","banana", new BigDecimal(3),50);
         ItemAmount=3;
 
         //userNow=new User("name","123abc");
-        //*********
+
     }
 
     public void Menu(){

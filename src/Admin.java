@@ -18,9 +18,9 @@ public class Admin extends User{
     //确认
     public static boolean YorN(){
         char select = scanner.next().charAt(0);
-        if(select=='y')
+        if(select=='y'||select=='Y')
             return true;
-        else if(select=='n')
+        else if(select=='n'||select=='N')
             return false;
         else {
             return false;
