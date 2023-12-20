@@ -5,8 +5,11 @@ public class User {
     private String password;//密码
     private String[] record=new String[1000];//购买记录
     private int nums=0;//购买数量
+    private static Scanner scanner=new Scanner(System.in);
 
-    public User(){}
+    public User(){
+
+    }
     public User(String name,String password){
         this.name=name;
         this.password=password;
@@ -17,21 +20,18 @@ public class User {
     public void setName(String name) {this.name = name;}
     public void setPassword(String password) {this.password = password;}
 
-    //注册用户
+    //注册
     public static User Register(){
         String name,password;
-        Scanner scanner=new Scanner(System.in);
         boolean isExist;
 
         do{
             isExist=false;
-            System.out.println("请输入用户名：");
-            name= scanner.next();
+            System.out.println("请输入用户名：");name= scanner.next();
             if(name.length()<3)
                 System.out.println("用户名长度不能小于3位!");
-
-            for(int i = 0; i< shop.UserAmount; i++) {
-                if (name.equals(shop.Users[i].getName())) {
+            for (User user : shop.Users) {
+                if (name.equals(user.getName())) {
                     isExist = true;
                     System.out.println("用户名已存在！");
                 }
@@ -40,8 +40,7 @@ public class User {
 
 
         do{
-            System.out.println("请输入密码：");
-            password= scanner.next();
+            System.out.println("请输入密码：");password= scanner.next();
             if(password.length()<6)
                 System.out.println("密码长度不能小于6位!");
             if(!Validator.isAlphaNumeric(password))
@@ -60,22 +59,18 @@ public class User {
         String loginPassword;
         Scanner scanner=new Scanner(System.in);
 
-        System.out.println("请输入用户名：");
-        loginName = scanner.next();
-
-        for (int i = 0; i < shop.UserAmount; i++) {
-            if (loginName.equals(shop.Users[i].getName())) {
+        System.out.println("请输入用户名：");loginName = scanner.next();
+        for(User user:shop.Users){
+            if(loginName.equals(user.getName())){
                 System.out.println("请输入密码：");
                 loginPassword = scanner.next();
-
-                while (!loginPassword.equals(shop.Users[i].getPassword())) {
+                while (!loginPassword.equals(user.getPassword())) {
                     System.out.println("密码错误，请重新输入：");
                     loginPassword = scanner.next();
                 }
-                return new User(loginName, loginPassword);
+                return user;
             }
         }
-
         System.out.println("未找到该用户");
         return null;
     }

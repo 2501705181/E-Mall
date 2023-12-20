@@ -1,6 +1,7 @@
 import java.math.BigDecimal;
+import java.util.List;
 
-public class Item {
+public class Item  {
     private String name;
     private String number;
     private int amount;
@@ -53,5 +54,8 @@ public class Item {
         return "名称："+this.name+" 编号：" +this.number
                 +" 价格："+this.price+" 数量："+this.amount;
     }
+
+
+
 
 }
