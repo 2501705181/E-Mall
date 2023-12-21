@@ -1,9 +1,8 @@
 import java.math.BigDecimal;
-import java.util.List;
 
 public class Item  {
     private String name;
-    private String number;
+    private int id;
     private int amount;
     private BigDecimal price;
 
@@ -12,25 +11,25 @@ public class Item  {
         this.amount=0;
         this.price=new BigDecimal(0);
     }
-    public Item(String number,String name,BigDecimal price,int amount){
+    public Item(int id, String name, BigDecimal price, int amount){
         this.name=name;
-        this.number=number;
+        this.id =id;
         this.amount=amount;
         this.price=price;
     }
 
     public void setName(String name) {this.name = name;}
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getNumber() {
-        return number;
+    public int getId() {
+        return id;
     }
 
     public int getAmount() {
@@ -51,7 +50,7 @@ public class Item  {
 
     @Override
     public String toString(){
-        return "名称："+this.name+" 编号：" +this.number
+        return "编号：" +this.id+" 名称："+this.name
                 +" 价格："+this.price+" 数量："+this.amount;
     }
 
