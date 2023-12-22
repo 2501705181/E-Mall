@@ -1,3 +1,4 @@
+import java.io.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -15,6 +16,14 @@ public class Shop {
     private boolean loop=true;//控制菜单显示
 
 
+    public Shop(){
+        try {
+            read();
+        }catch(IOException e){
+
+        }
+    }
+
     //执行顺序 1静态代码块 2普通代码块 3构造器
     {
         //测试用
@@ -22,7 +31,7 @@ public class Shop {
         Items.add(new Item(10002,"pear", new BigDecimal(4),40));
         Items.add(new Item(10003,"banana", new BigDecimal(3),50));
 
-        userNow=new User("name","123abc",this);
+       // userNow=new User("name","123abc",this);
 
     }
 
@@ -147,6 +156,46 @@ public class Shop {
             new adminView(adminNow);//启动管理员菜单
     }
 
+
+
+   public void read() throws IOException {
+       String userPath="d:\\E-mall\\users\\users.txt";
+       File userFile=new File(userPath);
+
+       if(!userFile.exists()){
+           System.out.println("用户文件不存在");
+            new File("d:\\E-mall\\users").mkdirs();//创建目录
+           userFile.createNewFile();//创建文件
+           System.out.println("已创建用户文件");
+       }else {
+           BufferedReader bis = new BufferedReader(new FileReader(userPath));
+           String readLine;
+           String []userInfo;
+           String name;
+           String password;
+           //按行读取用户列表
+           while ((readLine = bis.readLine()) != null) {
+               userInfo=readLine.split(",");
+               name=userInfo[0].substring(6,userInfo[0].length());
+               password=userInfo[1].substring(9,userInfo[1].length()-1);
+               Users.add(new User(name,password,this));//放进商城中
+               //System.out.println(name+" "+password);
+           }
+           bis.close();
+       }
+   }
+
+
+
+
+    public void save(){
+        String userPath="d:\\E-mall\\users.txt";
+        File userFile=new File(userPath);
+
+
+
+
+    }
 //    public void Exit(){
 //        char ch;
 //        do {
