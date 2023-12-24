@@ -1,5 +1,4 @@
 import java.io.*;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
