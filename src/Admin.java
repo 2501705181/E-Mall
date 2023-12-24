@@ -24,14 +24,14 @@ public class Admin extends User{
         loginName=scanner.next();
 
         //static静态方法同类一起加载，不能使用this、super
-        if(!loginName.equals("admin")) {
+        if(!"admin".equals(loginName)) {
             System.out.println("该管理员不存在！");
             return null;
         }
         System.out.println("请输入密码：");
         loginPassword=scanner.next();
 
-        while(!loginPassword.equals("admin")) {
+        while(!"admin".equals(loginPassword)) {
             System.out.println("密码错误，请重新输入：");
             loginPassword=scanner.next();
         }
@@ -137,7 +137,7 @@ public class Admin extends User{
     }
 
     //修改商品
-    public static void changItem() throws NumberFormatException{
+    public static void changeItem() throws NumberFormatException{
         int id;//编号
         String name;//名称
         BigDecimal price;//价格

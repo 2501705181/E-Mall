@@ -16,7 +16,7 @@ public class User implements Serializable {
     public User(String name,String password,Shop shop){
         this.name=name;
         this.password=password;
-        User.shop =shop;
+        this.shop =shop;
     }
 
     public String getName() {return name;}

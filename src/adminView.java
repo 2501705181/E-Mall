@@ -35,7 +35,7 @@ public class adminView {
                         break;
                     case 2:
                         System.out.print("您选择的菜单是：修改商品\n");
-                        admin.changItem();
+                        admin.changeItem();
                         break;
                     case 3:
                         System.out.print("您选择的菜单是：删除商品\n");

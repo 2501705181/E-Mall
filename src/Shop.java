@@ -78,24 +78,28 @@ public class Shop {
             System.out.println("未登录账号，请先登录");
             return;
         }
-
         if (Items.isEmpty()) {
             System.out.println("商城为空");
             return;
         }
-
         System.out.println("-----商品列表-----");
         for (Item item : Items)
             System.out.println(item);
         System.out.println("-----------------");
+        buy();
+    }
 
+
+    public void buy(){
         int id;//要购买的商品的编号
         int num;//要购买的数量
+
         System.out.println("请输入你要购买的商品编号：输入no取消购买");String checkId = scanner.next();
         if ("no".equals(checkId)) {
             System.out.println("取消购买");
             return;
         }
+
         try {
             id = Integer.parseInt(checkId);
             for (Item item : Items) {
@@ -149,40 +153,56 @@ public class Shop {
     //读取用户和商品信息
     @SuppressWarnings("all")
    public void read() throws IOException, ClassNotFoundException {
-       String userPath="d:\\E-mall\\users\\users.txt";
-       String itemPath="d:\\E-mall\\items\\items.txt";
+        String userPath = "d:\\E-mall\\users\\users.txt";
+        String itemPath = "d:\\E-mall\\items\\items.txt";
 
-       //读取用户
-       ObjectInputStream userFileReader=new ObjectInputStream(new FileInputStream(userPath));
-       List<User> U=(List<User>)userFileReader.readObject();
-       Users.addAll(U);
-       userFileReader.close();
-       //读取商品
-       ObjectInputStream itemFileReader=new ObjectInputStream(new FileInputStream(itemPath));
-       List<Item> I=(List<Item>)itemFileReader.readObject();
-       Items.addAll(I);
-       itemFileReader.close();
-   }
+        ObjectInputStream userFileReader = null;
+        ObjectInputStream itemFileReader = null;
+        try {
+            //读取用户
+            userFileReader = new ObjectInputStream(new FileInputStream(userPath));
+            List<User> U = (List<User>) userFileReader.readObject();
+            Users.addAll(U);
+            //读取商品
+            itemFileReader = new ObjectInputStream(new FileInputStream(itemPath));
+            List<Item> I = (List<Item>) itemFileReader.readObject();
+            Items.addAll(I);
+
+        } catch (IOException | ClassNotFoundException e) {
+
+        } finally {
+            itemFileReader.close();
+            userFileReader.close();
+        }
+    }
 
    //保存用户和商品信息到文件
     public void save() throws IOException {
-        String userPath="d:\\E-mall\\users";//用户文件路径
-        String itemPath="d:\\E-mall\\items";//商品文件路径
-        File userDir=new File(userPath);
-        File itemDir=new File(itemPath);
-        if(!userDir.exists()){//判断路径是否存在
-            userDir.mkdirs();
+        String userPath = "d:\\E-mall\\users";//用户文件路径
+        String itemPath = "d:\\E-mall\\items";//商品文件路径
+        ObjectOutputStream userFileWriter = null;
+        ObjectOutputStream itemFileWriter = null;
+        try {
+            File userDir = new File(userPath);
+            File itemDir = new File(itemPath);
+            if (!userDir.exists()) {//判断路径是否存在
+                userDir.mkdirs();
+            }
+            if (!itemDir.exists()) {
+                itemDir.mkdirs();
+            }
+            //保存用户列表到文件
+            userFileWriter = new ObjectOutputStream(new FileOutputStream(userPath + "\\users.txt"));
+            userFileWriter.writeObject(Users);
+            //保存商品列表到文件
+            itemFileWriter = new ObjectOutputStream(new FileOutputStream(itemPath + "\\items.txt"));
+            itemFileWriter.writeObject(Items);
+
+        } catch (IOException e) {
+
+        } finally {
+            userFileWriter.close();
+            itemFileWriter.close();
         }
-        if(!itemDir.exists()){
-            itemDir.mkdirs();
-        }
-        //保存用户列表到文件
-        ObjectOutputStream userFileWriter=new ObjectOutputStream(new FileOutputStream(userPath+"\\users.txt"));
-        userFileWriter.writeObject(Users);
-        userFileWriter.close();
-        //保存商品列表到文件
-        ObjectOutputStream itemFileWriter=new ObjectOutputStream(new FileOutputStream(itemPath+"\\items.txt"));
-        itemFileWriter.writeObject(Items);
-        itemFileWriter.close();
     }
 }

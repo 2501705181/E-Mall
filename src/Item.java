@@ -55,7 +55,13 @@ public class Item implements Serializable {
                 +" 价格："+this.price+" 数量："+this.amount;
     }
 
-
-
+    @Override
+    public boolean equals(Object o){
+        if(!(o instanceof Item)){
+            return false;
+        }else{
+            return ((Item) o).id==this.id;//id相同则视为同一件商品
+        }
+    }
 
 }
