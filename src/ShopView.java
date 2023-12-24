@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Scanner;
 
 public class ShopView {
@@ -57,6 +58,8 @@ public class ShopView {
                 }
             }catch(NumberFormatException e){
                 System.out.println("请选择1-6\n");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }while(loop);
     }

@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Scanner;
 public class Admin extends User{
@@ -53,13 +54,14 @@ public class Admin extends User{
     }
 
     //添加商品
-    public static void addItem(){
+    public static void addItem() throws IOException {
         int id;//编号
         String name;//名称
         BigDecimal price;//价格
         int amount;//数量
         boolean loop=true;
 
+        itemList();
         while(loop)
         {
             boolean isExist=false;
@@ -101,14 +103,15 @@ public class Admin extends User{
             System.out.println("是否继续添加物品？y/n");
             loop=YorN();
         }
+        shop.save();//刷新商城
     }
 
     //删除商品
-    public static void delItem() throws NumberFormatException{
+    public static void delItem() throws NumberFormatException, IOException {
         int id;
 
-        //打印商品列表
-        itemList();
+        itemList();//打印商品列表
+
         if(shop.Items.isEmpty())
             return;
         System.out.println("请输入你要删除的商品编号：");
@@ -121,6 +124,7 @@ public class Admin extends User{
                     if (ch == 'y' || ch == 'Y') {
                         shop.Items.remove(item);
                         System.out.println("已删除商品" + item.getName());
+                        shop.save();//刷新商城
                         return;
                     } else if (ch == 'n' || ch == 'N') {
                         System.out.println("取消删除");
@@ -139,11 +143,11 @@ public class Admin extends User{
         BigDecimal price;//价格
         int amount;//数量
 
-        //打印商品列表
-        itemList();
+
+        itemList();//打印商品列表
+
         if (shop.Items.isEmpty())
             return;
-
         BigDecimal zero = new BigDecimal(0);
         System.out.println("请输入要修改的商品的编号：");id=Integer.parseInt(scanner.next());
 
@@ -165,8 +169,11 @@ public class Admin extends User{
                     item.setName(name);
                     item.setPrice(price);
                     System.out.println("修改成功！");
+                    shop.save();//刷新商城
                 } catch (NumberFormatException e) {
                     System.out.println("价格或者数量错误");
+                } catch (IOException e) {
+                    //throw new RuntimeException(e);
                 }
                 return;
             }

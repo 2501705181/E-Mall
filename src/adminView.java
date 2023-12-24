@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -50,6 +51,8 @@ public class adminView {
                 }
             }catch(InputMismatchException |NumberFormatException e){
                 System.out.println("输入错误");
+            } catch (IOException e) {
+                //throw new RuntimeException(e);
             }
         }while(loop);
     }

@@ -1,7 +1,8 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class User {
+public class User implements Serializable {
     public String name;//用户名
     public String password;//密码
     private ArrayList<String> records=new ArrayList<>();//购买记录

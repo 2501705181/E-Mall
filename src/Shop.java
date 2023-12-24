@@ -1,6 +1,7 @@
 import java.io.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.List;
 
@@ -16,27 +17,16 @@ public class Shop {
     private boolean loop=true;//控制菜单显示
 
 
-    public Shop(){
+    public Shop() {
         try {
-            read();
-        }catch(IOException e){
-
+            read();//读取用户和商品到内存中
+        }catch (IOException|ClassNotFoundException e){
+            //e.printStackTrace();
         }
     }
 
-    //执行顺序 1静态代码块 2普通代码块 3构造器
-    {
-        //测试用
-        Items.add(new Item(10001,"apple", new BigDecimal(5),20));
-        Items.add(new Item(10002,"pear", new BigDecimal(4),40));
-        Items.add(new Item(10003,"banana", new BigDecimal(3),50));
-
-       // userNow=new User("name","123abc",this);
-
-    }
-
-    //注册功能
-    public void Register(){
+    //注册
+    public void Register() throws IOException {
         String name,password;
         boolean isExist;
         do{
@@ -62,11 +52,11 @@ public class Shop {
         //当password为字母和数字的组合时返回true，否则返回false
         Users.add(new User(name,password,this));
         System.out.println("注册成功！");
+        save();
     }
 
     //登录
     public void Login() {
-
         if(userNow!=null){
             System.out.println("当前已登录用户"+userNow.getName()+",不能重复登录");
             return;
@@ -75,7 +65,6 @@ public class Shop {
             System.out.println("请先注册");
             return;
         }
-
         userNow=User.Login();//设置当前登录用户
         if(userNow!=null)
             System.out.println("登录成功！");
@@ -86,7 +75,6 @@ public class Shop {
 
     //查看商城
     public void ViewShop() {
-
         if (userNow == null) {
             System.out.println("未登录账号，请先登录");
             return;
@@ -134,15 +122,18 @@ public class Shop {
                     //新增购买记录
                     userNow.addRecord("商品名称：" + item.getName() + " 单价：" + item.getPrice() + " 购买数量：" + num);
                     System.out.println("购买成功！");
+                    save();//刷新
                     return;
                 }
             }
-        }catch (NumberFormatException e){
-            System.out.print("编号错误，");
+        }catch (NumberFormatException|InputMismatchException e){
+            System.out.println("输入错误");
+        } catch (IOException e) {
+            //throw new RuntimeException(e);//文件保存
         }
-        System.out.println("未找到该商品");
     }
 
+    //查看购买记录
     public void ViewMyPurchases(){
         if(userNow==null)
             System.out.println("请先登录！");
@@ -150,61 +141,49 @@ public class Shop {
             userNow.getRecord();//打印购买记录
     }
 
-
+    //管理员登陆
     public void AdminLogin(){
         if(Admin.Login(this)!=null)//返回true为登录成功
             new adminView(adminNow);//启动管理员菜单
     }
 
-
-
-   public void read() throws IOException {
+    //读取用户和商品信息
+    @SuppressWarnings("all")
+   public void read() throws IOException, ClassNotFoundException {
        String userPath="d:\\E-mall\\users\\users.txt";
-       File userFile=new File(userPath);
+       String itemPath="d:\\E-mall\\items\\items.txt";
 
-       if(!userFile.exists()){
-           System.out.println("用户文件不存在");
-            new File("d:\\E-mall\\users").mkdirs();//创建目录
-           userFile.createNewFile();//创建文件
-           System.out.println("已创建用户文件");
-       }else {
-           BufferedReader bis = new BufferedReader(new FileReader(userPath));
-           String readLine;
-           String []userInfo;
-           String name;
-           String password;
-           //按行读取用户列表
-           while ((readLine = bis.readLine()) != null) {
-               userInfo=readLine.split(",");
-               name=userInfo[0].substring(6,userInfo[0].length());
-               password=userInfo[1].substring(9,userInfo[1].length()-1);
-               Users.add(new User(name,password,this));//放进商城中
-               //System.out.println(name+" "+password);
-           }
-           bis.close();
-       }
+       //读取用户
+       ObjectInputStream userFileReader=new ObjectInputStream(new FileInputStream(userPath));
+       List<User> U=(List<User>)userFileReader.readObject();
+       Users.addAll(U);
+       userFileReader.close();
+       //读取商品
+       ObjectInputStream itemFileReader=new ObjectInputStream(new FileInputStream(itemPath));
+       List<Item> I=(List<Item>)itemFileReader.readObject();
+       Items.addAll(I);
+       itemFileReader.close();
    }
 
-
-
-
-    public void save(){
-        String userPath="d:\\E-mall\\users.txt";
-        File userFile=new File(userPath);
-
-
-
-
+   //保存用户和商品信息到文件
+    public void save() throws IOException {
+        String userPath="d:\\E-mall\\users";//用户文件路径
+        String itemPath="d:\\E-mall\\items";//商品文件路径
+        File userDir=new File(userPath);
+        File itemDir=new File(itemPath);
+        if(!userDir.exists()){//判断路径是否存在
+            userDir.mkdirs();
+        }
+        if(!itemDir.exists()){
+            itemDir.mkdirs();
+        }
+        //保存用户列表到文件
+        ObjectOutputStream userFileWriter=new ObjectOutputStream(new FileOutputStream(userPath+"\\users.txt"));
+        userFileWriter.writeObject(Users);
+        userFileWriter.close();
+        //保存商品列表到文件
+        ObjectOutputStream itemFileWriter=new ObjectOutputStream(new FileOutputStream(itemPath+"\\items.txt"));
+        itemFileWriter.writeObject(Items);
+        itemFileWriter.close();
     }
-//    public void Exit(){
-//        char ch;
-//        do {
-//            System.out.println("确认要退出吗？y/n");ch = scanner.next().charAt(0);
-//            if(ch=='y'||ch=='Y')
-//                loop = false;
-//            else if (ch=='n'||ch=='N') {
-//                break;
-//            }
-//        }while(loop);
-//    }
 }
