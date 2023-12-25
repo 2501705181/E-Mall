@@ -1,4 +1,5 @@
 import java.io.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -90,11 +91,12 @@ public class Shop {
     }
 
 
-    public void buy(){
+    public void buy() {
         int id;//要购买的商品的编号
         int num;//要购买的数量
 
-        System.out.println("请输入你要购买的商品编号：输入no取消购买");String checkId = scanner.next();
+        System.out.println("请输入你要购买的商品编号：输入no取消购买");
+        String checkId = scanner.next();
         if ("no".equals(checkId)) {
             System.out.println("取消购买");
             return;
@@ -102,34 +104,38 @@ public class Shop {
 
         try {
             id = Integer.parseInt(checkId);
-            for (Item item : Items) {
-                if (id == item.getId()) {
-                    if (item.getAmount() == 0) {
-                        System.out.println("商品库存不足，无法购买");
-                        return;
-                    }
-                    System.out.println("请输入要购买的数量：");
-                    num = scanner.nextInt();
+            Item temp = new Item(id, "name", new BigDecimal(0), 0);
 
-                    while (num > item.getAmount() || num <= 0) {
-                        if (num > item.getAmount())
-                            System.out.println("商品数量不足!请重新输入：");
-                        if (num <= 0)
-                            System.out.println("购买数量必须大于零！请重新输入");
-                        num = scanner.nextInt();
-                    }
-
-                    int n = item.getAmount();//原来的数量
-                    item.setAmount(n - num);//数量减少num个
-
-                    //新增购买记录
-                    userNow.addRecord("商品名称：" + item.getName() + " 单价：" + item.getPrice() + " 购买数量：" + num);
-                    System.out.println("购买成功！");
-                    save();//刷新
-                    return;
-                }
+            if (!Items.contains(temp)) {
+                System.out.println("该商品不存在");
+                return;
             }
-        }catch (NumberFormatException|InputMismatchException e){
+
+            Item target = Items.get(Items.indexOf(temp));//获取要购买的商品
+            if (target.getAmount() == 0) {
+                System.out.println("商品库存不足，无法购买");
+                return;
+            }
+
+            System.out.println("请输入要购买的数量：");
+            num = scanner.nextInt();
+            while (num > target.getAmount() || num <= 0) {
+                if (num > target.getAmount())
+                    System.out.println("商品数量不足!请重新输入：");
+                if (num <= 0)
+                    System.out.println("购买数量必须大于零！请重新输入");
+                num = scanner.nextInt();
+            }
+
+            int originNum = target.getAmount();//原来的数量
+            target.setAmount(originNum - num);//数量减少num个
+
+            //新增购买记录
+            userNow.addRecord("商品名称：" + target.getName() + " 单价：" + target.getPrice() + " 购买数量：" + num);
+            System.out.println("购买成功！");
+            save();//保存
+
+        } catch (NumberFormatException | InputMismatchException e) {
             System.out.println("输入错误");
         } catch (IOException e) {
             //throw new RuntimeException(e);//文件保存
@@ -171,8 +177,10 @@ public class Shop {
         } catch (IOException | ClassNotFoundException e) {
 
         } finally {
-            itemFileReader.close();
-            userFileReader.close();
+            if(itemFileReader!=null)
+                itemFileReader.close();
+            if(userFileReader!=null)
+                userFileReader.close();
         }
     }
 
