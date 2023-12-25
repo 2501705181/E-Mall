@@ -1,14 +1,15 @@
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 public class Admin extends User{
 
     private static Shop shop=null;
+    private static Scanner scanner=new Scanner(System.in);
 
     public Admin(){
-        //this("admin","admin");
+
     }
-    private static Scanner scanner=new Scanner(System.in);
     public Admin(String userName, String password,Shop shop){
         this.name=userName;
         this.password=password;
@@ -55,55 +56,41 @@ public class Admin extends User{
 
     //添加商品
     public static void addItem() throws IOException {
-        int id;//编号
+        int id=0;//编号
         String name;//名称
         BigDecimal price;//价格
         int amount;//数量
-        boolean loop=true;
+        boolean loop=true;//循环添加商品
 
-        itemList();
-        while(loop)
-        {
-            boolean isExist=false;
-            System.out.println("请输入商品的编号:");
+        while (loop) {
+            //itemList();//打印商品列表
+            System.out.println("请输入新增商品的编号:");
+            try {
+                id = Integer.parseInt(scanner.next());//用nextInt()会有异常
+                Item temp = new Item(id, "name", new BigDecimal(0), 0);
 
-            id = Integer.parseInt(scanner.next());
-            for (Item item : shop.Items) {
-                if (id == (item.getId())) {
+                if (shop.Items.contains(temp)) {
                     System.out.println("该商品已存在，请输入数量：");
-                    String checkAmount = scanner.next();
-                    try {
-                        amount = Integer.parseInt(checkAmount);
-
-                        item.setAmount(amount);
-                        System.out.println("已将商品" + item.getName() + "的数量设为" + amount);
-                        isExist = true;
-                    } catch (NumberFormatException e) {
-
-                    }
-                }
-            }
-            if (!isExist) {
-                System.out.println("请输入商品的名称、价格、数量：");
-                name = scanner.next();
-                String checkPrice= scanner.next();
-                String checkAmount=scanner.next();
-                try {
-                    price = BigDecimal.valueOf(Double.parseDouble(checkPrice));
-                    amount = Integer.parseInt(checkAmount);
-                }catch (NumberFormatException e){
-                    //System.out.println(e);
-                    System.out.println("价格或数量错误");
+                    Item target = shop.Items.get(shop.Items.indexOf(temp));
+                    amount = scanner.nextInt();
+                    target.setAmount(amount);
+                    System.out.println("已将" + target.getName() + "的数量设为" + amount);
                     break;
+                } else {
+                    System.out.println("请输入商品的名称、价格、数量：");
+                    name = scanner.next();
+                    price = scanner.nextBigDecimal();
+                    amount = scanner.nextInt();
+                    shop.Items.add(new Item(id, name, price, amount));//往商城中加入新商品
+                    System.out.println("成功添加商品：" + name + "\n是否继续添加物品？y/n");
+                    loop = YorN();
                 }
-                Item newItem = new Item(id, name, price, amount);
-                shop.Items.add(newItem);
-                System.out.println("成功添加物品：" + name);
+                shop.save();//保存数据
+            } catch (InputMismatchException |NumberFormatException e) {
+                System.out.println("输入有误");
+                return;
             }
-            System.out.println("是否继续添加物品？y/n");
-            loop=YorN();
         }
-        shop.save();//刷新商城
     }
 
     //删除商品
@@ -111,29 +98,28 @@ public class Admin extends User{
         int id;
 
         itemList();//打印商品列表
-
-        if(shop.Items.isEmpty())
+        if(shop.Items.isEmpty()) {
             return;
+        }
+
         System.out.println("请输入你要删除的商品编号：");
         id = Integer.parseInt(scanner.next());
+        Item temp=new Item(id, "name", new BigDecimal(0), 0);
 
-        for(Item item: shop.Items) {
-            if (id==item.getId()) {
-                while(true) {
-                    System.out.println("确认要删除这个商品吗？y/n");char ch = scanner.next().charAt(0);
-                    if (ch == 'y' || ch == 'Y') {
-                        shop.Items.remove(item);
-                        System.out.println("已删除商品" + item.getName());
-                        shop.save();//刷新商城
-                        return;
-                    } else if (ch == 'n' || ch == 'N') {
-                        System.out.println("取消删除");
-                        return;
-                    }
-                }
+        if(!shop.Items.contains(temp)){
+            System.out.println("该商品不存在");
+        }else{
+            Item target = shop.Items.get(shop.Items.indexOf(temp));
+            System.out.println("确认要删除这个商品吗？y/n");
+            char ch = scanner.next().charAt(0);
+            if (ch == 'y' || ch == 'Y') {
+                shop.Items.remove(target);
+                System.out.println("已删除商品" + target.getName());
+                shop.save();//刷新商城
+            } else if (ch == 'n' || ch == 'N') {
+                System.out.println("取消删除");
             }
         }
-        System.out.println("未找到该商品");
     }
 
     //修改商品
@@ -143,13 +129,13 @@ public class Admin extends User{
         BigDecimal price;//价格
         int amount;//数量
 
-
         itemList();//打印商品列表
 
         if (shop.Items.isEmpty())
             return;
         BigDecimal zero = new BigDecimal(0);
         System.out.println("请输入要修改的商品的编号：");id=Integer.parseInt(scanner.next());
+
 
         for (Item item : shop.Items) {
             if (id == item.getId()) {

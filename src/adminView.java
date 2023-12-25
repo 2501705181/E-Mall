@@ -15,7 +15,7 @@ public class adminView {
     }
 
     //显示菜单
-    public void Menu(){
+    public void Menu()  {
         int select;
         do {
             System.out.println("*****管理员菜单****");
@@ -27,7 +27,7 @@ public class adminView {
             System.out.println("请选择菜单：");
 
             try {
-                select = Integer.parseInt(scanner.next());
+                select = scanner.nextInt();
                 switch (select) {
                     case 1:
                         System.out.print("您选择的菜单是：增加商品\n");
