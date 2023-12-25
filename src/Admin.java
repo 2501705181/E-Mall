@@ -4,7 +4,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 public class Admin extends User{
 
-    private static Shop shop;
+    private static Shop shop=null;
     private static final Scanner scanner=new Scanner(System.in);
 
     public Admin(){

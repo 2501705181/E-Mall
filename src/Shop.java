@@ -7,21 +7,17 @@ import java.util.List;
 
 public class Shop {
 
-    public static List<User> Users;//用户集合
-    public static List<Item> Items;//商品集合
+    public static List<User> Users=new ArrayList<>();//用户集合
+    public static List<Item> Items=new ArrayList<>();//商品集合
 
-    public static User userNow;//当前登录的用户
-    public static Admin adminNow;//当前登录的管理员
+    public static User userNow=null;//当前登录的用户
+    public static Admin adminNow=null;//当前登录的管理员
 
     private static final Scanner scanner=new Scanner(System.in);
 
 
 
     public Shop() {
-        Users=new ArrayList<>();
-        Items=new ArrayList<>();
-        userNow=null;
-        adminNow=null;
         try {
             read();//读取用户和商品到内存中
         }catch (IOException|ClassNotFoundException e){
@@ -166,25 +162,18 @@ public class Shop {
         String userPath = "d:\\E-mall\\users\\users.txt";
         String itemPath = "d:\\E-mall\\items\\items.txt";
 
-        ObjectInputStream userFileReader = null;
-        ObjectInputStream itemFileReader = null;
-        try {
+        ObjectInputStream userFileReader = new ObjectInputStream(new FileInputStream(userPath));;
+        ObjectInputStream itemFileReader = new ObjectInputStream(new FileInputStream(itemPath));
+        try(userFileReader;itemFileReader) {
             //读取用户
-            userFileReader = new ObjectInputStream(new FileInputStream(userPath));
             List<User> U = (List<User>) userFileReader.readObject();
             Users.addAll(U);
             //读取商品
-            itemFileReader = new ObjectInputStream(new FileInputStream(itemPath));
             List<Item> I = (List<Item>) itemFileReader.readObject();
             Items.addAll(I);
 
         } catch (IOException | ClassNotFoundException e) {
-
-        } finally {
-            if(itemFileReader!=null)
-                itemFileReader.close();
-            if(userFileReader!=null)
-                userFileReader.close();
+            //System.out.println("读取信息失败");
         }
     }
 
@@ -192,29 +181,27 @@ public class Shop {
     public void save() throws IOException {
         String userPath = "d:\\E-mall\\users";//用户文件路径
         String itemPath = "d:\\E-mall\\items";//商品文件路径
-        ObjectOutputStream userFileWriter = null;
-        ObjectOutputStream itemFileWriter = null;
-        try {
-            File userDir = new File(userPath);
-            File itemDir = new File(itemPath);
+        ObjectOutputStream userFileWriter =new ObjectOutputStream(
+                new FileOutputStream(userPath + "\\users.txt"));
+        ObjectOutputStream itemFileWriter = new ObjectOutputStream(
+                new FileOutputStream(itemPath + "\\items.txt"));
+        File userDir = new File(userPath);
+        File itemDir = new File(itemPath);
+        try(userFileWriter;itemFileWriter) {
+
             if (!userDir.exists()) {//判断路径是否存在
-                userDir.mkdirs();
+                userDir.mkdirs();//创建目录
             }
             if (!itemDir.exists()) {
                 itemDir.mkdirs();
             }
             //保存用户列表到文件
-            userFileWriter = new ObjectOutputStream(new FileOutputStream(userPath + "\\users.txt"));
             userFileWriter.writeObject(Users);
             //保存商品列表到文件
-            itemFileWriter = new ObjectOutputStream(new FileOutputStream(itemPath + "\\items.txt"));
             itemFileWriter.writeObject(Items);
 
         } catch (IOException e) {
-
-        } finally {
-            userFileWriter.close();
-            itemFileWriter.close();
+            //System.out.println("保存失败");
         }
     }
 }
