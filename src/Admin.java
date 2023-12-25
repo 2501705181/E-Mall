@@ -4,8 +4,8 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 public class Admin extends User{
 
-    private static Shop shop=null;
-    private static Scanner scanner=new Scanner(System.in);
+    private static Shop shop;
+    private static final Scanner scanner=new Scanner(System.in);
 
     public Admin(){
 
@@ -13,7 +13,7 @@ public class Admin extends User{
     public Admin(String userName, String password,Shop shop){
         this.name=userName;
         this.password=password;
-        this.shop=shop;
+        Admin.shop =shop;
     }
 
 
@@ -130,41 +130,41 @@ public class Admin extends User{
         int amount;//数量
 
         itemList();//打印商品列表
-
         if (shop.Items.isEmpty())
             return;
+
         BigDecimal zero = new BigDecimal(0);
-        System.out.println("请输入要修改的商品的编号：");id=Integer.parseInt(scanner.next());
-
-
-        for (Item item : shop.Items) {
-            if (id == item.getId()) {
-                System.out.println("请输入该商品的名称、价格、数量");
-                try {
-                    do {
-                        name = scanner.next();
-                        price = BigDecimal.valueOf(Double.parseDouble(scanner.next()));
-                        amount = Integer.parseInt(scanner.next());
-
-                        if (price.compareTo(zero) < 1)
-                            System.out.println("商品价格必须大于0,请重新输入：");
-                        if (amount <= 0)
-                            System.out.println("商品数量必须大于0，请重新输入：");
-                    } while (price.compareTo(zero) < 1 || amount <= 0);
-                    item.setAmount(amount);
-                    item.setName(name);
-                    item.setPrice(price);
-                    System.out.println("修改成功！");
-                    shop.save();//刷新商城
-                } catch (NumberFormatException e) {
-                    System.out.println("价格或者数量错误");
-                } catch (IOException e) {
-                    //throw new RuntimeException(e);
-                }
+        System.out.println("请输入要修改的商品的编号：");
+        try {
+            id = Integer.parseInt(scanner.next());
+            Item temp = new Item(id, "name", new BigDecimal(0), 0);
+            if (!shop.Items.contains(temp)) {
+                System.out.println("该商品不存在");
                 return;
             }
+
+            Item target = shop.Items.get(shop.Items.indexOf(temp));
+            System.out.println("请输入该商品的名称、价格、数量");
+            do {//循环输入
+                name = scanner.next();
+                price = BigDecimal.valueOf(Double.parseDouble(scanner.next()));
+                amount = Integer.parseInt(scanner.next());
+                if (price.compareTo(zero) < 1)
+                    System.out.println("商品价格必须大于0,请重新输入：");
+                if (amount <= 0)
+                    System.out.println("商品数量必须大于0，请重新输入：");
+            } while (price.compareTo(zero) < 1 || amount <= 0);
+
+            target.setAmount(amount);
+            target.setName(name);
+            target.setPrice(price);
+            System.out.println("修改成功！");
+            shop.save();//刷新商城
+        } catch (InputMismatchException | NumberFormatException e) {
+            System.out.println("输入有误");
+        } catch (IOException e) {
+            //System.out.println("保存失败");
         }
-        System.out.println("该商品不存在");
     }
 
     //确认

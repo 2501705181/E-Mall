@@ -7,17 +7,21 @@ import java.util.List;
 
 public class Shop {
 
-    public static List<User> Users=new ArrayList<>();
-    public static List<Item> Items=new ArrayList<>();
+    public static List<User> Users;//用户集合
+    public static List<Item> Items;//商品集合
 
-    public static User userNow=null;//当前登录的用户
-    public static Admin adminNow=null;//当前登录的管理员
+    public static User userNow;//当前登录的用户
+    public static Admin adminNow;//当前登录的管理员
 
-    private Scanner scanner=new Scanner(System.in);
-    private boolean loop=true;//控制菜单显示
+    private static final Scanner scanner=new Scanner(System.in);
+
 
 
     public Shop() {
+        Users=new ArrayList<>();
+        Items=new ArrayList<>();
+        userNow=null;
+        adminNow=null;
         try {
             read();//读取用户和商品到内存中
         }catch (IOException|ClassNotFoundException e){
